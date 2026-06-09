@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Details</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input { padding: 8px; width: 100px; }
+        button { padding: 10px 20px; background: green; color: white; border: none; cursor: pointer; }
+        a { display: inline-block; margin-top: 10px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+    <h2>Flight Details</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <p><b>Flight Number :</b> {{ flight_no }}</p>
+    <p><b>From         :</b> {{ details.source }}</p>
+    <p><b>To           :</b> {{ details.dest }}</p>
+    <p><b>Available Seats :</b> {{ details.seats }}</p>
+    <p><b>Price per Seat  :</b> Rs. {{ details.price }}</p>
+
+    <form action="/book" method="POST">
+
+        <!-- passing flight_no to the next route -->
+        <input type="hidden" name="flight_no" value="{{ flight_no }}">
+
+        <label>How many seats do you want to book?</label><br>
+        <input type="number" name="seats" min="1" max="{{ details.seats }}">
+        <button type="submit">Confirm Booking</button>
+
+    </form>
+
+    <a href="/">Back to Search</a>
+
+</body>
+</html>

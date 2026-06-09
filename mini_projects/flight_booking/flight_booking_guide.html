@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flight Booking App — Setup Guide</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f7fa;
+      color: #222;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .hero {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      padding: 48px 32px 40px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2rem; margin-bottom: 10px; }
+    .hero p  { font-size: 1.05rem; opacity: 0.9; }
+    .badge-row { margin-top: 18px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .badge {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Section headings ── */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1a73e8;
+      margin: 40px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e3eaf6;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    /* ── Accordion ── */
+    details {
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    summary {
+      padding: 18px 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "＋";
+      margin-left: auto;
+      font-size: 1.2rem;
+      color: #1a73e8;
+      transition: transform 0.2s;
+    }
+    details[open] summary::after { content: "－"; }
+    details[open] summary { border-bottom: 1px solid #eef2f8; }
+    .details-body { padding: 20px 24px 24px; }
+
+    /* ── OS Tabs ── */
+    .tab-group { margin-bottom: 8px; }
+    .tab-buttons { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tab-btn {
+      padding: 7px 18px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #555;
+      transition: all 0.15s;
+    }
+    .tab-btn.active   { background: #1a73e8; color: white; border-color: #1a73e8; }
+    .tab-btn:hover:not(.active) { border-color: #1a73e8; color: #1a73e8; }
+    .tab-pane { display: none; }
+    .tab-pane.active  { display: block; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      overflow-x: auto;
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+    code { font-family: 'Consolas', 'Courier New', monospace; }
+    .inline-code {
+      background: #eef2fb;
+      color: #1a55b0;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      font-size: 0.87em;
+    }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; }
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .step-num {
+      counter-increment: step;
+      min-width: 34px;
+      height: 34px;
+      background: #1a73e8;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content p  { margin-bottom: 6px; }
+    .step-content h4 { margin-bottom: 6px; font-size: 0.98rem; }
+
+    /* ── Note / Tip / Warning boxes ── */
+    .note, .tip, .warn {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 12px 0;
+      font-size: 0.92rem;
+    }
+    .note { background: #e8f0fe; border-left: 4px solid #1a73e8; color: #1a3c6e; }
+    .tip  { background: #e6f4ea; border-left: 4px solid #0f9d58; color: #1b5e20; }
+    .warn { background: #fff8e1; border-left: 4px solid #f9a825; color: #6d4c00; }
+
+    /* ── Flow diagram ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 14px 0;
+    }
+    .flow-box {
+      background: #e8f0fe;
+      color: #1a3c6e;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+    .flow-arrow { font-size: 1.3rem; color: #999; }
+
+    /* ── File tree ── */
+    .file-tree {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.88rem;
+      line-height: 1.9;
+    }
+    .file-tree .folder { color: #89b4fa; }
+    .file-tree .file   { color: #a6e3a1; }
+    .file-tree .comment{ color: #6c7086; }
+
+    /* ── Route table ── */
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.92rem; }
+    th { background: #1a73e8; color: white; padding: 10px 14px; text-align: left; }
+    td { padding: 10px 14px; border-bottom: 1px solid #eef2f8; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f5f8ff; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px;
+      color: #888;
+      font-size: 0.85rem;
+      border-top: 1px solid #e0e6ef;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ HERO -->
+<div class="hero">
+  <h1>✈ Flight Booking App</h1>
+  <p>A simple Flask web application — Step-by-step setup guide</p>
+  <div class="badge-row">
+    <span class="badge">Python 3</span>
+    <span class="badge">Flask</span>
+    <span class="badge">HTML</span>
+    <span class="badge">Windows &amp; Mac</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════════ OVERVIEW -->
+  <div class="section-title">📋 What This App Does</div>
+  <div class="card">
+    <p>This is a beginner-friendly web application built with <strong>Python + Flask</strong>. It lets a user:</p>
+    <ul style="margin: 12px 0 0 20px; line-height: 2;">
+      <li>Search for a flight by entering source and destination city</li>
+      <li>View flight details — seats available and price</li>
+      <li>Book one or more seats</li>
+      <li>See a booking confirmation with total amount</li>
+    </ul>
+
+    <div style="margin-top: 20px;">
+      <strong>How pages connect:</strong>
+      <div class="flow" style="margin-top: 10px;">
+        <div class="flow-box">Search Form<br><small style="font-weight:400">search.html</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Flight Details<br><small style="font-weight:400">flight.html</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Booking Success<br><small style="font-weight:400">success.html</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ FILE STRUCTURE -->
+  <div class="section-title">📁 Project File Structure</div>
+  <div class="card">
+    <div class="file-tree">
+      <span class="folder">flight_booking/</span><br>
+      &nbsp;&nbsp;├── <span class="file">app.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Main Python file (all routes live here)</span><br>
+      &nbsp;&nbsp;├── <span class="file">guide.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># This guide</span><br>
+      &nbsp;&nbsp;└── <span class="folder">templates/</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">search.html</span> &nbsp;&nbsp;<span class="comment"># Step 1 — Search form</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">flight.html</span> &nbsp;&nbsp;<span class="comment"># Step 2 — Flight details + seat input</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">success.html</span> &nbsp;<span class="comment"># Step 3 — Booking confirmation</span>
+    </div>
+    <div class="note" style="margin-top: 14px;">
+      <strong>Important:</strong> HTML files must be inside a folder named exactly <span class="inline-code">templates</span>. Flask looks for that folder automatically.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ PREREQUISITES -->
+  <div class="section-title">⚙️ Step 1 — Install Prerequisites</div>
+
+  <!-- Python -->
+  <details open>
+    <summary>🐍 Install Python 3</summary>
+    <div class="details-body">
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'py-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'py-mac')">🍎 Mac</button>
+        </div>
+
+        <div id="py-win" class="tab-pane active">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <h4>Download Python</h4>
+                <p>Go to <strong>python.org/downloads</strong> and download the latest Python 3 installer (.exe file).</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <h4>Run the installer</h4>
+                <p>Open the downloaded file. <strong>Before clicking Install Now</strong>, check the box that says:</p>
+                <div class="warn">☑ Add Python to PATH &nbsp;←&nbsp; This is very important!</div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <h4>Verify installation</h4>
+                <p>Open <strong>Command Prompt</strong> (press <span class="inline-code">Win + R</span>, type <span class="inline-code">cmd</span>, press Enter) and run:</p>
+                <pre><code>python --version</code></pre>
+                <p>You should see something like: <span class="inline-code">Python 3.12.0</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="py-mac" class="tab-pane">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <h4>Check if Python is already installed</h4>
+                <p>Open <strong>Terminal</strong> (press <span class="inline-code">Cmd + Space</span>, type <span class="inline-code">Terminal</span>) and run:</p>
+                <pre><code>python3 --version</code></pre>
+                <p>If you see a version number, Python is already installed. Skip to Step 3.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <h4>Install Python (if not installed)</h4>
+                <p>Download from <strong>python.org/downloads</strong> and run the .pkg installer. Follow the on-screen steps.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <h4>Verify installation</h4>
+                <pre><code>python3 --version</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- pip -->
+  <details>
+    <summary>📦 Check pip (Python package installer)</summary>
+    <div class="details-body">
+      <p>pip comes with Python automatically. But should you type <span class="inline-code">pip</span> or <span class="inline-code">pip3</span>?</p>
+
+      <div class="note" style="margin: 14px 0;">
+        <strong>pip vs pip3 — which one to use?</strong><br><br>
+        Both install the same thing. The difference is <em>which Python version</em> they point to:<br><br>
+        &nbsp;&nbsp;• <strong>pip</strong> &nbsp;→ may point to Python 2 on older Mac systems<br>
+        &nbsp;&nbsp;• <strong>pip3</strong> → always points to Python 3<br><br>
+        <strong>Simple rule:</strong><br>
+        &nbsp;&nbsp;• Windows → use <span class="inline-code">pip</span><br>
+        &nbsp;&nbsp;• Mac &nbsp;&nbsp;&nbsp;→ use <span class="inline-code">pip3</span> (safer choice)<br><br>
+        <strong>Not sure?</strong> Run both commands below and use whichever shows <span class="inline-code">(python 3.x)</span> at the end.
+      </div>
+
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'pip-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'pip-mac')">🍎 Mac</button>
+        </div>
+        <div id="pip-win" class="tab-pane active">
+          <p>Run this to check:</p>
+          <pre><code>pip --version</code></pre>
+          <p>Expected output — look for <strong>python 3</strong> at the end:</p>
+          <pre><code>pip 24.0 from C:\Python312\lib\site-packages\pip (python 3.12)
+                                                             ^^^^^^^^^^^^ this confirms it's Python 3</code></pre>
+          <div class="tip">✅ On Windows, <span class="inline-code">pip</span> almost always points to Python 3. Use <span class="inline-code">pip</span>.</div>
+        </div>
+        <div id="pip-mac" class="tab-pane">
+          <p>Run both and check which one shows python 3:</p>
+          <pre><code>pip --version
+pip3 --version</code></pre>
+          <p>Look for <strong>python 3</strong> at the end of the output:</p>
+          <pre><code>pip3 24.0 from /usr/local/lib/python3.12/... (python 3.12)
+                                                            ^^^^^^^^^^^^ use this one</code></pre>
+          <div class="tip">✅ On Mac, always prefer <span class="inline-code">pip3</span> — it guarantees Python 3.</div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════════════════════ INSTALL FLASK -->
+  <div class="section-title">📦 Step 2 — Install Flask</div>
+
+  <details open>
+    <summary>🔧 Install Flask using pip</summary>
+    <div class="details-body">
+      <p>Flask is the only library you need to install. It is not built into Python, so we install it manually.</p>
+
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'flask-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'flask-mac')">🍎 Mac</button>
+        </div>
+        <div id="flask-win" class="tab-pane active">
+          <p>Open <strong>Command Prompt</strong> and run:</p>
+          <pre><code>pip install flask</code></pre>
+        </div>
+        <div id="flask-mac" class="tab-pane">
+          <p>Open <strong>Terminal</strong> and run:</p>
+          <pre><code>pip3 install flask</code></pre>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top: 14px;">
+        ✅ You will see Flask downloading and installing. When you see <strong>"Successfully installed flask-..."</strong> — you are done.
+      </div>
+
+      <p style="margin-top: 14px;"><strong>Verify Flask is installed:</strong></p>
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'fv-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'fv-mac')">🍎 Mac</button>
+        </div>
+        <div id="fv-win" class="tab-pane active">
+          <pre><code>python -c "import flask; print('Flask installed!')"</code></pre>
+        </div>
+        <div id="fv-mac" class="tab-pane">
+          <pre><code>python3 -c "import flask; print('Flask installed!')"</code></pre>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════════════════════ RUN THE APP -->
+  <div class="section-title">🚀 Step 3 — Run the Application</div>
+
+  <details open>
+    <summary>▶ Start the Flask server</summary>
+    <div class="details-body">
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'run-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'run-mac')">🍎 Mac</button>
+        </div>
+
+        <div id="run-win" class="tab-pane active">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <h4>Open Command Prompt</h4>
+                <p>Press <span class="inline-code">Win + R</span>, type <span class="inline-code">cmd</span>, press Enter.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <h4>Navigate to the project folder</h4>
+                <p>Use the <span class="inline-code">cd</span> command to go to the folder where <span class="inline-code">app.py</span> is saved. Example:</p>
+                <pre><code>cd C:\Users\YourName\Documents\flight_booking</code></pre>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <h4>Run the app</h4>
+                <pre><code>python app.py</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="run-mac" class="tab-pane">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <h4>Open Terminal</h4>
+                <p>Press <span class="inline-code">Cmd + Space</span>, type <span class="inline-code">Terminal</span>, press Enter.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <h4>Navigate to the project folder</h4>
+                <pre><code>cd ~/Documents/flight_booking</code></pre>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <h4>Run the app</h4>
+                <pre><code>python3 app.py</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top: 6px;">
+        ✅ You should see this output in your terminal:
+      </div>
+      <pre><code> * Running on http://127.0.0.1:5000
+ * Debug mode: on</code></pre>
+    </div>
+  </details>
+
+  <details open>
+    <summary>🌐 Open the app in your browser</summary>
+    <div class="details-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <p>Open any browser (Chrome, Firefox, Edge).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <p>In the address bar, type:</p>
+            <pre><code>http://127.0.0.1:5000</code></pre>
+            <p>Press Enter. The Flight Booking search page will open.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <strong>What is 127.0.0.1:5000?</strong><br>
+        <span class="inline-code">127.0.0.1</span> means "this computer" (localhost). <span class="inline-code">5000</span> is the port Flask uses by default. The app runs only on your computer — it is not on the internet.
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════════════════════ USING THE APP -->
+  <div class="section-title">🖱 Step 4 — How to Use the App</div>
+
+  <details open>
+    <summary>📝 Booking a flight — walkthrough</summary>
+    <div class="details-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Search for a flight</h4>
+            <p>Enter a <strong>Source City</strong> and <strong>Destination City</strong> and click <strong>Search</strong>.</p>
+            <p>Example: Source = <span class="inline-code">Delhi</span> &nbsp;|&nbsp; Destination = <span class="inline-code">Mumbai</span></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>View flight details</h4>
+            <p>If a flight is found, you will see the flight number, available seats, and price per seat.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Enter number of seats</h4>
+            <p>Type how many seats you want to book and click <strong>Confirm Booking</strong>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>See booking confirmation</h4>
+            <p>The success page shows seats booked, total amount, and remaining seats on that flight.</p>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top: 8px;"><strong>Available routes to try:</strong></p>
+      <table style="margin-top: 10px;">
+        <thead>
+          <tr><th>Flight No.</th><th>From</th><th>To</th><th>Seats</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>AI101</td><td>Delhi</td><td>Mumbai</td><td>5</td><td>Rs. 5500</td></tr>
+          <tr><td>AI102</td><td>Mumbai</td><td>Delhi</td><td>8</td><td>Rs. 5200</td></tr>
+          <tr><td>6E201</td><td>Bangalore</td><td>Chennai</td><td>3</td><td>Rs. 3200</td></tr>
+          <tr><td>6E202</td><td>Chennai</td><td>Bangalore</td><td>4</td><td>Rs. 3100</td></tr>
+          <tr><td>UK301</td><td>Delhi</td><td>Kolkata</td><td>2</td><td>Rs. 6000</td></tr>
+          <tr><td>UK302</td><td>Kolkata</td><td>Delhi</td><td>6</td><td>Rs. 6200</td></tr>
+          <tr><td>SG401</td><td>Hyderabad</td><td>Pune</td><td>10</td><td>Rs. 4000</td></tr>
+          <tr><td>SG402</td><td>Pune</td><td>Hyderabad</td><td>7</td><td>Rs. 4100</td></tr>
+          <tr><td>QP501</td><td>Ahmedabad</td><td>Delhi</td><td>5</td><td>Rs. 3500</td></tr>
+          <tr><td>QP502</td><td>Delhi</td><td>Ahmedabad</td><td>9</td><td>Rs. 3600</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- ═══════════════════════════ HOW IT WORKS -->
+  <div class="section-title">🧠 How the Code Works</div>
+
+  <details>
+    <summary>🔗 The 3 Flask routes explained</summary>
+    <div class="details-body">
+      <table>
+        <thead>
+          <tr><th>URL</th><th>Method</th><th>What it does</th><th>Template</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="inline-code">/</span></td><td>GET</td><td>Shows the search form</td><td>search.html</td></tr>
+          <tr><td><span class="inline-code">/search</span></td><td>POST</td><td>Looks up flight in dictionary, shows details</td><td>flight.html</td></tr>
+          <tr><td><span class="inline-code">/book</span></td><td>POST</td><td>Books seats, updates dictionary, shows confirmation</td><td>success.html</td></tr>
+        </tbody>
+      </table>
+      <div class="note" style="margin-top: 16px;">
+        <strong>GET vs POST:</strong><br>
+        <strong>GET</strong> = just loading/viewing a page (no data sent).<br>
+        <strong>POST</strong> = submitting a form with data (source city, seats, etc.).
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>🔁 How data travels between pages</summary>
+    <div class="details-body">
+      <p>Data moves between pages using <strong>HTML forms</strong>. There are two types of inputs used:</p>
+
+      <p style="margin-top: 14px;"><strong>1. Visible input</strong> — the user types into it:</p>
+      <pre><code>&lt;input type="text" name="source"&gt;</code></pre>
+
+      <p style="margin-top: 14px;"><strong>2. Hidden input</strong> — invisible to the user, carries data silently:</p>
+      <pre><code>&lt;input type="hidden" name="flight_no" value="{{ flight_no }}"&gt;</code></pre>
+      <p>This is how <span class="inline-code">flight.html</span> sends the flight number to the <span class="inline-code">/book</span> route without the user seeing it.</p>
+
+      <p style="margin-top: 14px;"><strong>Flask reads form data using:</strong></p>
+      <pre><code>flight_no = request.form["flight_no"]
+seats     = int(request.form["seats"])</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>📊 How seats are updated</summary>
+    <div class="details-body">
+      <p>The flights dictionary lives in memory while the app is running. When a booking is confirmed:</p>
+      <pre><code># Subtract the booked seats from available seats
+details["seats"] -= seats
+
+# Calculate total cost
+total = seats * details["price"]</code></pre>
+      <div class="warn">
+        ⚠️ <strong>Note for students:</strong> The dictionary resets every time you restart the app (<span class="inline-code">python app.py</span>), because data is stored in memory, not in a database. This is normal for a learning project.
+      </div>
+    </div>
+  </details>
+
+  <!-- ═══════════════════════════ TROUBLESHOOTING -->
+  <div class="section-title">🛠 Troubleshooting</div>
+
+  <details>
+    <summary>❌ "ModuleNotFoundError: No module named 'flask'"</summary>
+    <div class="details-body">
+      <p>Flask is not installed. Run this command and try again:</p>
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'err1-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'err1-mac')">🍎 Mac</button>
+        </div>
+        <div id="err1-win" class="tab-pane active"><pre><code>pip install flask</code></pre></div>
+        <div id="err1-mac" class="tab-pane"><pre><code>pip3 install flask</code></pre></div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>❌ "python is not recognized" (Windows)</summary>
+    <div class="details-body">
+      <p>Python was installed but not added to PATH. Two options:</p>
+      <p><strong>Option 1:</strong> Reinstall Python and check "Add Python to PATH" during setup.</p>
+      <p><strong>Option 2:</strong> Try using <span class="inline-code">py</span> instead of <span class="inline-code">python</span>:</p>
+      <pre><code>py app.py</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>❌ "Address already in use" / port 5000 busy</summary>
+    <div class="details-body">
+      <p>Another program is using port 5000. Run Flask on a different port:</p>
+      <div class="tab-group">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab(this, 'port-win')">🪟 Windows</button>
+          <button class="tab-btn"        onclick="switchTab(this, 'port-mac')">🍎 Mac</button>
+        </div>
+        <div id="port-win" class="tab-pane active">
+          <p>Edit the last line of <span class="inline-code">app.py</span> to:</p>
+          <pre><code>app.run(debug=True, port=5001)</code></pre>
+          <p>Then open <span class="inline-code">http://127.0.0.1:5001</span> in the browser.</p>
+        </div>
+        <div id="port-mac" class="tab-pane">
+          <p>On Mac, port 5000 may be used by AirPlay. Edit the last line of <span class="inline-code">app.py</span>:</p>
+          <pre><code>app.run(debug=True, port=5001)</code></pre>
+          <p>Then open <span class="inline-code">http://127.0.0.1:5001</span> in the browser.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>❌ Page shows "TemplateNotFound" error</summary>
+    <div class="details-body">
+      <p>Flask cannot find the HTML files. Make sure:</p>
+      <ul style="margin: 10px 0 0 20px; line-height: 2.2;">
+        <li>Your HTML files are inside a folder named <strong>exactly</strong> <span class="inline-code">templates</span> (lowercase)</li>
+        <li>The <span class="inline-code">templates</span> folder is in the <strong>same folder</strong> as <span class="inline-code">app.py</span></li>
+      </ul>
+      <div class="file-tree" style="margin-top: 12px;">
+        <span class="folder">flight_booking/</span><br>
+        &nbsp;&nbsp;├── <span class="file">app.py</span><br>
+        &nbsp;&nbsp;└── <span class="folder">templates/</span> &nbsp;<span class="comment"># ← must be here, next to app.py</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">search.html</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">flight.html</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">success.html</span>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>❌ "No flight found" even for a valid city</summary>
+    <div class="details-body">
+      <p>Check your spelling. The app does a case-insensitive match, but the city name must match exactly.</p>
+      <p>Valid cities: <span class="inline-code">Delhi</span>, <span class="inline-code">Mumbai</span>, <span class="inline-code">Bangalore</span>, <span class="inline-code">Chennai</span>, <span class="inline-code">Kolkata</span>, <span class="inline-code">Hyderabad</span>, <span class="inline-code">Pune</span>, <span class="inline-code">Ahmedabad</span></p>
+    </div>
+  </details>
+
+  <!-- ═══════════════════════════ STOP THE APP -->
+  <div class="section-title">⏹ How to Stop the App</div>
+  <div class="card">
+    <p>Go back to your terminal / Command Prompt and press:</p>
+    <pre><code>Ctrl + C</code></pre>
+    <p>The server will stop. You can close the terminal after that.</p>
+  </div>
+
+</div>
+
+<footer>
+  Flight Booking App &nbsp;·&nbsp; Built with Python &amp; Flask &nbsp;·&nbsp; Beginner Project Guide
+</footer>
+
+<script>
+  function switchTab(btn, targetId) {
+    // find the tab-group container
+    const group = btn.closest('.tab-group');
+    // deactivate all buttons and panes in this group
+    group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    group.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    // activate clicked button and matching pane
+    btn.classList.add('active');
+    document.getElementById(targetId).classList.add('active');
+  }
+</script>
+
+</body>
+</html>

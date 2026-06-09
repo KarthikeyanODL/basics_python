@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Booking</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input { display: block; margin: 8px 0; padding: 8px; width: 250px; }
+        button { padding: 10px 20px; background: blue; color: white; border: none; cursor: pointer; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+    <h2>Search Flight</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form action="/search" method="POST">
+        <label>Source City:</label>
+        <input type="text" name="source" placeholder="e.g. Delhi">
+
+        <label>Destination City:</label>
+        <input type="text" name="destination" placeholder="e.g. Mumbai">
+
+        <button type="submit">Search</button>
+    </form>
+
+</body>
+</html>

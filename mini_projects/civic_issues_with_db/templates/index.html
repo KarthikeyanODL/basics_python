@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Report an Issue</title>
+  <style>
+    body { font-family: sans-serif; max-width: 500px; margin: 40px auto; }
+    input, select, textarea { width: 100%; padding: 8px; margin: 6px 0 14px; box-sizing: border-box; }
+    button { padding: 10px 24px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    #response { margin-top: 16px; padding: 12px; background: #e6f4ea; border-radius: 6px; display: none; }
+  </style>
+</head>
+<body>
+
+  <h2>Report a Civic Issue</h2>
+
+  <form id="reportForm">
+    <label>Your Name</label>
+    <input type="text" name="name" placeholder="e.g. Ravi Kumar" required>
+
+    <label>Issue</label>
+    <input type="text" name="issue" placeholder="e.g. Pothole on Main Street" required>
+
+    <button type="submit">Submit Report</button>
+  </form>
+
+  <div id="response"></div>
+
+  <p><a href="/reports">View all reports →</a></p>
+
+  <script>
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+      e.preventDefault();                          // stop normal form submit
+
+      var formData = new FormData(this);           // collect name + issue
+
+      fetch('/submit', { method: 'POST', body: formData })  // POST to Flask
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var box = document.getElementById('response');
+          box.style.display = 'block';
+          box.textContent = '✓ ' + data.message + ' (' + data.name + ': ' + data.issue + ')';
+          document.getElementById('reportForm').reset();
+        });
+    });
+  </script>
+
+</body>
+</html>

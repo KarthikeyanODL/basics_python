@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Booking Confirmed</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        h2 { color: green; }
+        a { display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>Booking Confirmed!</h2>
+
+    <p><b>Flight Number  :</b> {{ flight_no }}</p>
+    <p><b>From           :</b> {{ details.source }}</p>
+    <p><b>To             :</b> {{ details.dest }}</p>
+    <p><b>Seats Booked   :</b> {{ seats_booked }}</p>
+    <p><b>Total Amount   :</b> Rs. {{ total }}</p>
+    <p><b>Remaining Seats:</b> {{ details.seats }}</p>
+
+    <a href="/">Book Another Flight</a>
+
+</body>
+</html>
