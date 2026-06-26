@@ -1,11 +1,9 @@
-name = input("Enter your name: ")
-age = input("Enter your age: ")
-language = input("Enter your favourite language: ")
-
-person = {
-    "name": name,
-    "age": age,
-    "language": language
+gold_rate = {
+    "gold_24k": 89500.00,
+    "gold_22k": 82002.00,
+    "silver":   95000.00,
+    "unit":     "INR",
+    "date":     "2024-01-01"
 }
 
-print(person)
+print(gold_rate)
