@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student CRUD App</title>
+    <style>
+        body        { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; }
+        h2          { margin-top: 40px; border-bottom: 2px solid #ccc; padding-bottom: 6px; }
+        input       { display: block; width: 100%; padding: 9px; margin: 8px 0; font-size: 14px; box-sizing: border-box; }
+        button      { padding: 10px 22px; font-size: 15px; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 6px; }
+        .btn-create { background: #4CAF50; }
+        .btn-read   { background: #2196F3; }
+        .btn-update { background: #FF9800; }
+        .btn-delete { background: #f44336; }
+        .msg        { margin-top: 12px; font-size: 15px; color: green; }
+        table       { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td      { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th          { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+
+    <h1>Student CRUD App</h1>
+
+    <!-- ── CREATE ─────────────────────────────── -->
+    <h2>Create — Add New Student</h2>
+    <input type="text"  id="create_name"  placeholder="Name" />
+    <input type="email" id="create_email" placeholder="Email" />
+    <input type="text"  id="create_city"  placeholder="City" />
+    <button class="btn-create" onclick="createStudent()">Create</button>
+    <div class="msg" id="create_msg"></div>
+
+    <!-- ── READ ───────────────────────────────── -->
+    <h2>Read — View All Students</h2>
+    <button class="btn-read" onclick="readStudents()">Read All</button>
+    <table id="students_table" style="display:none;">
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>City</th></tr>
+        </thead>
+        <tbody id="students_body"></tbody>
+    </table>
+
+    <!-- ── SEARCH ────────────────────────────────── -->
+    <h2>Search — Find a Student by Name</h2>
+    <input type="text" id="search_name" placeholder="Enter name to search" />
+    <button class="btn-read" onclick="searchStudent()">Search</button>
+    <div class="msg" id="search_msg"></div>
+    <table id="search_table" style="display:none;">
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>City</th></tr>
+        </thead>
+        <tbody id="search_body"></tbody>
+    </table>
+
+    <!-- ── UPDATE ─────────────────────────────── -->
+    <h2>Update — Edit a Student</h2>
+    <input type="number" id="update_id"    placeholder="Student ID to update" />
+    <input type="text"   id="update_name"  placeholder="New Name" />
+    <input type="email"  id="update_email" placeholder="New Email" />
+    <input type="text"   id="update_city"  placeholder="New City" />
+    <button class="btn-update" onclick="updateStudent()">Update</button>
+    <div class="msg" id="update_msg"></div>
+
+    <!-- ── DELETE ─────────────────────────────── -->
+    <h2>Delete — Remove a Student</h2>
+    <input type="number" id="delete_id" placeholder="Student ID to delete" />
+    <button class="btn-delete" onclick="deleteStudent()">Delete</button>
+    <div class="msg" id="delete_msg"></div>
+
+
+    <script>
+
+        // ── CREATE ──────────────────────────────
+        function createStudent() {
+            const payload = {
+                name:  document.getElementById('create_name').value,
+                email: document.getElementById('create_email').value,
+                city:  document.getElementById('create_city').value
+            };
+
+            fetch('/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('create_msg').innerText = data.message;
+            });
+        }
+
+        // ── READ ────────────────────────────────
+        function readStudents() {
+            fetch('/read')
+            .then(res => res.json())
+            .then(students => {
+                const tbody = document.getElementById('students_body');
+                tbody.innerHTML = '';
+
+                students.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${s.id}</td>
+                            <td>${s.name}</td>
+                            <td>${s.email}</td>
+                            <td>${s.city}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('students_table').style.display = 'table';
+            });
+        }
+
+        // ── SEARCH ──────────────────────────────
+        function searchStudent() {
+            const payload = {
+                name: document.getElementById('search_name').value
+            };
+
+            fetch('/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('search_msg').innerText = data.message;
+
+                const tbody = document.getElementById('search_body');
+                tbody.innerHTML = '';
+
+                data.results.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${s.id}</td>
+                            <td>${s.name}</td>
+                            <td>${s.email}</td>
+                            <td>${s.city}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('search_table').style.display = data.results.length > 0 ? 'table' : 'none';
+            });
+        }
+
+        // ── UPDATE ──────────────────────────────
+        function updateStudent() {
+            const payload = {
+                id:    document.getElementById('update_id').value,
+                name:  document.getElementById('update_name').value,
+                email: document.getElementById('update_email').value,
+                city:  document.getElementById('update_city').value
+            };
+
+            fetch('/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('update_msg').innerText = data.message;
+            });
+        }
+
+        // ── DELETE ──────────────────────────────
+        function deleteStudent() {
+            const payload = {
+                id: document.getElementById('delete_id').value
+            };
+
+            fetch('/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('delete_msg').innerText = data.message;
+            });
+        }
+
+    </script>
+
+</body>
+</html>

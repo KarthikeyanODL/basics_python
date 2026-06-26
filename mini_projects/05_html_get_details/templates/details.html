@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Details</title>
+    <style>
+        body   { font-family: Arial, sans-serif; max-width: 400px; margin: 60px auto; }
+        table  { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th     { background: #f0f0f0; }
+        a      { display: inline-block; margin-top: 20px; color: #2196F3; }
+    </style>
+</head>
+<body>
+
+    <h1>My Details</h1>
+
+    <table>
+        <tr><th>Name</th>     <td>{{ details.name }}</td></tr>
+        <tr><th>Age</th>      <td>{{ details.age }}</td></tr>
+        <tr><th>City</th>     <td>{{ details.city }}</td></tr>
+        <tr><th>Language</th> <td>{{ details.language }}</td></tr>
+    </table>
+
+    <a href="/">← Go Back</a>
+
+</body>
+</html>

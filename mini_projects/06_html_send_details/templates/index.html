@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send My Details</title>
+    <style>
+        body  { font-family: Arial, sans-serif; max-width: 400px; margin: 60px auto; }
+        h2    { margin-top: 40px; border-bottom: 2px solid #ccc; padding-bottom: 6px; }
+        input { display: block; width: 100%; padding: 10px; margin: 10px 0; font-size: 15px; box-sizing: border-box; }
+        button { padding: 12px 24px; font-size: 16px; cursor: pointer; background: #2196F3; color: white; border: none; border-radius: 6px; }
+        .btn-green { background: #4CAF50; }
+        #response { margin-top: 20px; font-size: 16px; color: green; }
+    </style>
+</head>
+<body>
+
+    <!-- ── WAY 1: Send using HTML Form (form data) ── -->
+    <h2>Way 1 — HTML Form</h2>
+    <form action="/submit-form" method="POST">
+        <input type="text"  name="name"  placeholder="Your Name" />
+        <input type="email" name="email" placeholder="Your Email" />
+        <input type="text"  name="city"  placeholder="Your City" />
+        <button type="submit" class="btn-green">Submit Form</button>
+    </form>
+
+    <!-- ── WAY 2: Send using JavaScript fetch (JSON) ── -->
+    <h2>Way 2 — JavaScript Fetch</h2>
+    <input type="text"  id="name"  placeholder="Your Name" />
+    <input type="email" id="email" placeholder="Your Email" />
+    <input type="text"  id="city"  placeholder="Your City" />
+    <button onclick="sendDetails()">Submit JSON</button>
+    <div id="response"></div>
+
+    <script>
+        function sendDetails() {
+            const payload = {
+                name:  document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                city:  document.getElementById('city').value
+            };
+
+            fetch('/submit-json', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').innerText = data.message;
+            });
+        }
+    </script>
+
+</body>
+</html>
