@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Result</title>
+    <style>
+        body   { font-family: Arial, sans-serif; max-width: 400px; margin: 60px auto; text-align: center; }
+        table  { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
+        th, td { border: 1px solid #ccc; padding: 12px; }
+        th     { background: #f0f0f0; }
+        a      { display: inline-block; margin-top: 20px; color: #2196F3; }
+    </style>
+</head>
+<body>
+
+    <h1>Live Weather</h1>
+
+    <table>
+        <tr><th>City</th>        <td>{{ weather.city }}</td></tr>
+        <tr><th>Temperature</th> <td>{{ weather.temperature }} °C</td></tr>
+        <tr><th>Wind Speed</th>  <td>{{ weather.wind_speed }} km/h</td></tr>
+    </table>
+
+    <a href="/">← Go Back</a>
+
+</body>
+</html>

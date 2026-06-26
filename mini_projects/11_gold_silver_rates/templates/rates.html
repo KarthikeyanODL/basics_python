@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gold & Silver Rates</title>
+    <style>
+        body   { font-family: Arial, sans-serif; max-width: 500px; margin: 60px auto; text-align: center; }
+        table  { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
+        th, td { border: 1px solid #ccc; padding: 12px; font-size: 16px; }
+        th     { background: #f0f0f0; }
+        .gold  { background: #FFF9E6; }
+        .silver{ background: #F5F5F5; }
+        a      { display: inline-block; margin-top: 20px; color: #2196F3; }
+    </style>
+</head>
+<body>
+
+    <h1>Live Gold & Silver Rates</h1>
+    <p>Indian Market Prices</p>
+
+    <table>
+        <tr>
+            <th>Metal</th>
+            <th>Rate (INR)</th>
+            <th>Unit</th>
+        </tr>
+        <tr class="gold">
+            <td>Gold 24K (Pure)</td>
+            <td>₹{{ rates.gold_24k }}</td>
+            <td>per 10 grams</td>
+        </tr>
+        <tr class="gold">
+            <td>Gold 22K (Jewellery)</td>
+            <td>₹{{ rates.gold_22k }}</td>
+            <td>per 10 grams</td>
+        </tr>
+        <tr class="silver">
+            <td>Silver</td>
+            <td>₹{{ rates.silver }}</td>
+            <td>per kg</td>
+        </tr>
+    </table>
+
+    <a href="/">← Go Back</a>
+
+</body>
+</html>
